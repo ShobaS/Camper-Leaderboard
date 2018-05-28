@@ -11,28 +11,29 @@ class LeaderBoard extends React.Component {
   }
 
   componentDidMount() {
-    fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
-      .then(results => {
-        return results.json();
-      }).then(data => {
-        let persons = data.map((person, i) => {
-          return (
-            <tr key={i}>
-              <td>{i+1}</td>
-              <td>
-                <a href="https://www.freecodecamp.org/">
-                  <img className="userimg" src={person.img} />
-                  <span>{person.username}</span>
-                </a>
-              </td>
-              <td className="center">{person.recent}</td>
-              <td className="center">{person.alltime}</td>
-            </tr>
-          )
-        });
+    let results = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
+      .then(result => {
+        return result.json();
+      });
+    results.then(data => {
+      let persons = data.map((person, i) => {
+        return (
+          <tr key={i}>
+            <td>{i + 1}</td>
+            <td>
+              <a target="_blank" href={"https://www.freecodecamp.org/" + person.username}>
+                <img className="userimg" src={person.img} />
+                <span>{person.username}</span>
+              </a>
+            </td>
+            <td className="center">{person.recent}</td>
+            <td className="center">{person.alltime}</td>
+          </tr>
+        )
+      });
 
-        this.setState({ persons: persons });
-      })
+      this.setState({ persons: persons });
+    })
   }
 
   render() {
@@ -49,7 +50,7 @@ class LeaderBoard extends React.Component {
               <th>Points in 30days</th>
               <th>All time points</th>
             </tr>
-            </thead>
+          </thead>
           <tbody>{this.state.persons}</tbody>
         </table>
       </div>
