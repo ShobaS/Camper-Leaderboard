@@ -7,19 +7,24 @@ class LeaderBoard extends React.Component {
     super();
     this.state = {
       persons: []
-    }
+    };
+    this.viewData = () => this._viewData();
+  }
+
+  _viewData(e) {
+    console.log(e);
   }
 
   componentDidMount() {
-    let results = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
-      .then(result => {
-        return result.json();
-      });
+    this.recentPoints(); 
+  } 
+
+  displayData(results) {
     results.then(data => {
       let persons = data.map((person, i) => {
         return (
           <tr key={i}>
-            <td>{i + 1}</td>
+            <td className="center">{i + 1}</td>
             <td>
               <a target="_blank" href={"https://www.freecodecamp.org/" + person.username}>
                 <img className="userimg" src={person.img} />
@@ -36,6 +41,22 @@ class LeaderBoard extends React.Component {
     })
   }
 
+  recentPoints() {
+    let recentResults = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
+    .then(result => {
+      return result.json();
+    });
+    this.displayData(recentResults);
+  }
+
+  allTimePoints() {
+    let alltimeResults = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/alltime')
+    .then(result => {
+      return result.json();
+    });
+    this.displayData(alltimeResults);
+  }
+
   render() {
     return (
       <div className="container">
@@ -47,8 +68,8 @@ class LeaderBoard extends React.Component {
             <tr>
               <th>#</th>
               <th>Camper Name</th>
-              <th>Points in 30days</th>
-              <th>All time points</th>
+              <th className="link" onClick={this.recentPoints.bind(this)}>Points in 30 days</th>
+              <th className="link" onClick={this.allTimePoints.bind(this)}>All time points</th>
             </tr>
           </thead>
           <tbody>{this.state.persons}</tbody>
