@@ -2,22 +2,29 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
+const recentResults = 'https://fcctop100.herokuapp.com/api/fccusers/top/recent';
+const alltimeResults = 'https://fcctop100.herokuapp.com/api/fccusers/top/alltime';
+
 class LeaderBoard extends React.Component {
   constructor() {
     super();
     this.state = {
       persons: []
     };
-    this.viewData = () => this._viewData();
-  }
-
-  _viewData(e) {
-    console.log(e);
+    // let recentResults = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent').then(result => {
+    //   return result.json();
+    // });
+    // this.recentPoints = this.recentPoints.bind(this,recentResults);
+    // this.allTimePoints = this.allTimePoints.bind(this);
   }
 
   componentDidMount() {
-    this.recentPoints(); 
-  } 
+    let results = fetch(recentResults).then(result => {
+      return result.json();
+    }).catch(e => console.log('error'));
+    // this.setState( {recentResults: recentResults});
+    this.displayData(results);
+  }
 
   displayData(results) {
     results.then(data => {
@@ -36,24 +43,19 @@ class LeaderBoard extends React.Component {
           </tr>
         )
       });
-
       this.setState({ persons: persons });
-    })
+    }).catch(e => console.log('error1'));
   }
 
-  recentPoints() {
-    let recentResults = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
-    .then(result => {
-      return result.json();
-    });
-    this.displayData(recentResults);
+  recentPoints(results) {
+    this.displayData(results);
   }
 
   allTimePoints() {
     let alltimeResults = fetch('https://fcctop100.herokuapp.com/api/fccusers/top/alltime')
-    .then(result => {
-      return result.json();
-    });
+      .then(result => {
+        return result.json();
+      });
     this.displayData(alltimeResults);
   }
 
@@ -68,8 +70,8 @@ class LeaderBoard extends React.Component {
             <tr>
               <th>#</th>
               <th>Camper Name</th>
-              <th className="link" onClick={this.recentPoints.bind(this)}>Points in 30 days</th>
-              <th className="link" onClick={this.allTimePoints.bind(this)}>All time points</th>
+              <th className="link" onClick={this.recentPoints}>Points in 30 days</th>
+              <th className="link" onClick={this.allTimePoints}>All time points</th>
             </tr>
           </thead>
           <tbody>{this.state.persons}</tbody>
